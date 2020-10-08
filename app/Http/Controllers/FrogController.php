@@ -37,22 +37,23 @@ class FrogController extends Controller
     public function store(Request $request)
     {
         $this->validate($request, [
-            'name' => 'required'            
+            'name' => 'required'
         ]);
  
         $frog = new Frog();
         $frog->name = $request->name;
  
-        if (auth()->user()->frogs()->save($frog))
+        if (auth()->user()->frogs()->save($frog)) {
             return response()->json([
                 'success' => true,
                 'data' => $frog->toArray()
             ]);
-        else
+        } else {
             return response()->json([
                 'success' => false,
                 'message' => 'frog not added'
             ], 500);
+        }
     }
  
     public function update(Request $request, $id)
@@ -68,15 +69,16 @@ class FrogController extends Controller
  
         $updated = $post->fill($request->all())->save();
  
-        if ($updated)
+        if ($updated) {
             return response()->json([
                 'success' => true
             ]);
-        else
+        } else {
             return response()->json([
                 'success' => false,
                 'message' => 'Post can not be updated'
             ], 500);
+        }
     }
  
     public function destroy($id)

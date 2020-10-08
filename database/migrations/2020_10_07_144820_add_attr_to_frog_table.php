@@ -16,8 +16,8 @@ class AddAttrToFrogTable extends Migration
         Schema::table('frogs', function (Blueprint $table) {
             $table->enum('gender',['M','F']);
             $table->enum('energy',['E','I']);
-            $table->smallInteger('age');
-            $table->string('Cog',2);
+            $table->smallInteger('age')->default(0);
+            $table->string('cog',2);
             $table->smallInteger('lifespan');
 
         });

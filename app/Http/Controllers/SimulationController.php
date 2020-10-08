@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Simulation;
+use App\Models\Frog;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class SimulationController extends Controller
 {
@@ -41,23 +43,31 @@ class SimulationController extends Controller
     public function store(Request $request)
     {
         $this->validate($request, [
-            'name' => 'required'            
+            'name' => 'required',
+            'count' => 'required'            
         ]);
  
         $simulation = new Simulation();
         $simulation->name = $request->name;
- 
-        if (auth()->user()->simulations()->save($simulation))
+
+        if (auth()->user()->simulations()->save($simulation)) {
+            for($cnt = 0; $cnt < $request->count; $cnt+=1)
+            {
+                $tempFrog = new Frog();
+                Log::channel('stderr')->info($tempFrog);
+                $simulation->frogs()->save($tempFrog);
+            }
             return response()->json([
                 'success' => true,
                 'data' => $simulation->toArray()
             ]);
-        else
+        }else
             return response()->json([
                 'success' => false,
                 'message' => 'simulation not added'
             ], 500);
     }
+
 
     /**
      * Display the specified resource.

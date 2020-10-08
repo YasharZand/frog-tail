@@ -15,7 +15,6 @@ class CreateFrogsTable extends Migration
     {
         Schema::create('frogs', function (Blueprint $table) {
             $table->id();
-            $table->integer('user_id');
             $table->text('name', 30);
             $table->timestamps();
         });

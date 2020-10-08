@@ -15,6 +15,6 @@ class Simulation extends Model
 
     public function frogs()
     {
-        return $this->hasMany(Frog::class);
+        return $this->hasMany(Frog::class,'sim_id');
     }
 }
