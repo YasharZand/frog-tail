@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\User;
+use Illuminate\Database\QueryException;
 
 class PassportAuthController extends Controller
 {
@@ -17,14 +18,21 @@ class PassportAuthController extends Controller
             'email' => 'required|email',
             'password' => 'required|min:8',
         ]);
+
+        try {
+            $user = User::create([
+                'name' => $request->name,
+                'email' => $request->email,
+                'password' => bcrypt($request->password)
+            ]);
+     
+            $token = $user->createToken('FrogAuthApp')->accessToken;
+        } catch (QueryException $e) {
+            report($e);
+            abort(409, 'Invalid email: this email already exists');
+            return false;
+        }
  
-        $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => bcrypt($request->password)
-        ]);
- 
-        $token = $user->createToken('FrogAuthApp')->accessToken;
  
         return response()->json(['token' => $token], 200);
     }

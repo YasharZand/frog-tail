@@ -2,7 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\FrogController;
+use App\Http\Controllers\SimulationController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -21,5 +21,5 @@ Route::post('login', 'App\Http\Controllers\PassportAuthController@login');
 // });
 
 Route::middleware('auth:api')->group(function () {
-    Route::resource('frogs', FrogController::class); //['except' => ['edit']]
+    Route::resource('simulation', SimulationController::class); //['except' => ['edit']]
 });

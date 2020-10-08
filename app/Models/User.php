@@ -7,11 +7,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Passport\HasApiTokens;
-use App\Models\Frog;
+use App\Models\Simulation;
 
 class User extends Authenticatable
 {
-    use Notifiable, HasApiTokens;
+    use Notifiable, HasFactory, HasApiTokens;
 
     /**
      * The attributes that are mass assignable.
@@ -43,8 +43,8 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-    public function frogs()
+    public function simulations()
     {
-        return $this->hasMany(Frog::class);
+        return $this->hasMany(Simulation::class);
     }
 }

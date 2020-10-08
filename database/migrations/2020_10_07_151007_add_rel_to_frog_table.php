@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateFrogsTable extends Migration
+class AddRelToFrogTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,9 @@ class CreateFrogsTable extends Migration
      */
     public function up()
     {
-        Schema::create('frogs', function (Blueprint $table) {
-            $table->id();
-            $table->integer('user_id');
-            $table->text('name', 30);
-            $table->timestamps();
+        Schema::table('frogs', function (Blueprint $table) {
+            $table->unsignedBigInteger('sim_id');
+            $table->foreign('sim_id')->references('id')->on('simulations');
         });
     }
 
@@ -28,6 +26,8 @@ class CreateFrogsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('frogs');
+        Schema::table('frogs', function (Blueprint $table) {
+            //
+        });
     }
 }
