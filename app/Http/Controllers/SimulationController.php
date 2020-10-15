@@ -3,9 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\Simulation;
+use App\Http\Resources\SimulationResource;
 use App\Models\Frog;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Validator;
 
 class SimulationController extends Controller
 {
@@ -14,25 +16,18 @@ class SimulationController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $simulations = auth()->user()->simulations;
- 
-        return response()->json([
-            'success' => true,
-            'data' => $simulations
+        return SimulationResource::collection(
+            auth()->user()->simulations()->simplePaginate($request->input('paginate') ?? 15)
+        )->additional([
+                'meta' => [
+                    'success' => true,
+                    'message' => "Simulations Loaded",
+            ]
         ]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
 
     /**
      * Store a newly created resource in storage.
@@ -42,30 +37,42 @@ class SimulationController extends Controller
      */
     public function store(Request $request)
     {
-        $this->validate($request, [
+        $validator = Validator::make($request->all(), [
             'name' => 'required',
-            'count' => 'required'            
+            'count' => 'required|int'
         ]);
- 
-        $simulation = new Simulation();
-        $simulation->name = $request->name;
 
-        if (auth()->user()->simulations()->save($simulation)) {
-            for($cnt = 0; $cnt < $request->count; $cnt+=1)
-            {
-                $tempFrog = new Frog();
-                Log::channel('stderr')->info($tempFrog);
-                $simulation->frogs()->save($tempFrog);
+        if ($validator->fails()) {
+            return response()->json($validator->errors()->toArray(), 422);
+        }
+
+        try {
+            $simulation = new Simulation();
+            $simulation->name = $request->name;
+            if (auth()->user()->simulations()->save($simulation)) {
+                //Create all frogs needed to run Simulation
+                for ($cnt = 0; $cnt < $request->count; $cnt+=1) {
+                    $tempFrog = new Frog();
+                    Log::channel('stderr')->info($tempFrog);
+                    $simulation->frogs()->save($tempFrog);
+                }
+                return (new SimulationResource($simulation))
+                    ->additional([
+                        'meta' => [
+                          'success' => true,
+                          'message' => "Simulation created"
+                        ]
+                    ]);
+            } else {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Simulation failed to create'
+                ], 500);
             }
-            return response()->json([
-                'success' => true,
-                'data' => $simulation->toArray()
-            ]);
-        }else
-            return response()->json([
-                'success' => false,
-                'message' => 'simulation not added'
-            ], 500);
+        } catch (Exception $ex) {
+            Log::info($ex->getMessage());
+            return response()->json($ex->getMessage(), 409);
+        }
     }
 
 
@@ -77,18 +84,13 @@ class SimulationController extends Controller
      */
     public function show(Simulation $simulation)
     {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Simulation  $simulation
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Simulation $simulation)
-    {
-        //
+        return (new SimulationResource($reservation))
+        ->additional([
+            'meta' => [
+                'success' => true,
+                'message' => "Reservation found"
+            ]
+        ]);
     }
 
     /**
@@ -111,6 +113,13 @@ class SimulationController extends Controller
      */
     public function destroy(Simulation $simulation)
     {
-        //
+        try {
+            $simulation->delete();
+        } catch (Exception $ex) {
+            Log::info($ex->getMessage());
+            return response()->json($ex->getMessage(), 409);
+        }
+    
+        return response()->json('Simulation has been deleted', 200);
     }
 }

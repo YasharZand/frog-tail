@@ -32,7 +32,7 @@ class Frog extends Model
 
     public function simulation()
     {
-        return $this->belongsTo('App\Models\Simulation');
+        return $this->belongsTo(Simulation::class);
     }
 
     public function genNames($gender)
