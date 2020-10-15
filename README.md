@@ -2,8 +2,11 @@
 
 ## Frog Simulation Idea
 
-This is a simulation based Frog Asia challenge. The idea is to have a simulation where you create a number of frogs to interact in a limited space. Based on their distance in the simulation world, gender, energy (Introverted, Extroverted), and cognetive stack ('NT','TN','FN','NF','ST','TS','FS','SF') these frogs are supposed to find their mates and reproduce before their lifespan runs out. 
-I haven't been able to finish completly but I will through time.
+This is a simulation based on the Frog Asia challenge. The idea is to have a simulation where you create a number of frogs to interact in a limited space. Based on their distance in the simulation world, gender, energy (Introverted, Extroverted), and cognitive stack ('NT','TN','FN','NF','ST','TS','FS','SF'). This is based on the Jungian cognitive functions approach in typing/classifying the Frogs.
+The frogs are supposed to find their nearest best mates and reproduce before their lifespan runs out. 
+Will these picky amphibians find their long lost love or get extinct before the world ends?
+
+Note that I haven't been able to finish my idea completly, but stay with me cause I will through time.
 
 
 ## Frog Simulation Backend
